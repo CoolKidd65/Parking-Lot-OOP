@@ -1,7 +1,7 @@
 package model.ticket;
 
-import model.vehicle.Vehicle; //need u guys to make the Vehicle class and package
-import model.parking.ParkingSlot; //also this
+import model.vehicle.Vehicle;
+import model.parking.ParkingSlot; //need u guys to make the ParkingSlot class and other parts
 
 public class Ticket {
 
@@ -9,28 +9,33 @@ public class Ticket {
     private Vehicle vehicle;
     private ParkingSlot parkingSlot;
 
-    private long entryTimeMillis;
-    private long exitTimeMillis;
-
+    private double entryTime;       // beginner-safe type
+    private double exitTime;        // beginner-safe type
     private double totalPrice;
-    private TicketStatus status;
 
-    // Default constructor (optional but safe to have)
+    private TicketStatus status;    // switch to string if needed
+
     public Ticket() {
+        this.ticketId = "";
+        this.entryTime = 0.0;
+        this.exitTime = 0.0;
+        this.totalPrice = 0.0;
         this.status = TicketStatus.ACTIVE;
-        this.entryTimeMillis = System.currentTimeMillis();
     }
 
-    // Main constructor used when creating a ticket
     public Ticket(String ticketId, Vehicle vehicle, ParkingSlot parkingSlot) {
         this.ticketId = ticketId;
         this.vehicle = vehicle;
         this.parkingSlot = parkingSlot;
-        this.entryTimeMillis = System.currentTimeMillis();
+
+        this.entryTime = 0.0;   // GUI or controller can fill this in later
+        this.exitTime = 0.0;
+        this.totalPrice = 0.0;
+
         this.status = TicketStatus.ACTIVE;
     }
 
-    // Getters and setters
+    // Getters & Setters 
 
     public String getTicketId() {
         return ticketId;
@@ -56,20 +61,20 @@ public class Ticket {
         this.parkingSlot = parkingSlot;
     }
 
-    public long getEntryTimeMillis() {
-        return entryTimeMillis;
+    public double getEntryTime() {
+        return entryTime;
     }
 
-    public void setEntryTimeMillis(long entryTimeMillis) {
-        this.entryTimeMillis = entryTimeMillis;
+    public void setEntryTime(double entryTime) {
+        this.entryTime = entryTime;
     }
 
-    public long getExitTimeMillis() {
-        return exitTimeMillis;
+    public double getExitTime() {
+        return exitTime;
     }
 
-    public void setExitTimeMillis(long exitTimeMillis) {
-        this.exitTimeMillis = exitTimeMillis;
+    public void setExitTime(double exitTime) {
+        this.exitTime = exitTime;
     }
 
     public double getTotalPrice() {
@@ -88,40 +93,18 @@ public class Ticket {
         this.status = status;
     }
 
-    // Helper methods
+    //  Helper Methods
 
     public boolean isActive() {
         return this.status == TicketStatus.ACTIVE;
     }
 
-    public long getDurationMillis() {
-        long end;
-
-        if (status == TicketStatus.ACTIVE) {
-            end = System.currentTimeMillis();
-        } else {
-            end = exitTimeMillis;
-        }
-
-        return end - entryTimeMillis;
-    }
-
     public void close(double finalPrice) {
-        this.exitTimeMillis = System.currentTimeMillis();
         this.totalPrice = finalPrice;
         this.status = TicketStatus.CLOSED;
     }
 
     public void cancel() {
         this.status = TicketStatus.CANCELLED;
-    }
-
-    @Override
-    public String toString() {
-        return "Ticket ID: " + ticketId +
-               ", Vehicle Plate: " + (vehicle != null ? vehicle.getPlateNumber() : "N/A") +
-               ", Slot: " + (parkingSlot != null ? parkingSlot.getSlotId() : "N/A") +
-               ", Status: " + status +
-               ", Total Price: " + totalPrice;
     }
 }

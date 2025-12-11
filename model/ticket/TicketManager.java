@@ -1,7 +1,7 @@
 package model.ticket;
 
-import model.vehicle.Vehicle; //need u guys to make the Vehicle class and package
-import model.parking.ParkingSlot; //also this
+import model.vehicle.Vehicle;
+import model.parking.ParkingSlot; //need u guys to make the ParkingSlot class and other parts
 
 public class TicketManager {
 
@@ -13,69 +13,80 @@ public class TicketManager {
         this.ticketCount = 0;
     }
 
-    // Create and store a new ticket
+    // Create ticket
     public Ticket createTicket(String ticketId, Vehicle vehicle, ParkingSlot slot) {
         if (ticketCount >= tickets.length) {
-            System.out.println("No more tickets can be stored.");
+            System.out.println("Ticket storage full.");
             return null;
         }
 
-        Ticket ticket = new Ticket(ticketId, vehicle, slot);
-        tickets[ticketCount] = ticket;
+        Ticket t = new Ticket(ticketId, vehicle, slot);
+        tickets[ticketCount] = t;
         ticketCount++;
 
-        return ticket;
+        return t;
     }
 
-    // Find ticket by ID (linear search)
+    // Search by ticket ID
     public Ticket findTicketById(String ticketId) {
         for (int i = 0; i < ticketCount; i++) {
-            if (tickets[i] != null && tickets[i].getTicketId().equals(ticketId)) {
-                return tickets[i];
+            Ticket t = tickets[i];
+
+            if (t != null && t.getTicketId().equals(ticketId)) {
+                return t;
             }
         }
         return null;
     }
 
-    // Close ticket with a given price (price can come from pricing logic)
+    // Close ticket with price
     public boolean closeTicket(String ticketId, double finalPrice) {
-        Ticket ticket = findTicketById(ticketId);
-        if (ticket == null) {
-            System.out.println("Ticket not found: " + ticketId);
+        Ticket t = findTicketById(ticketId);
+
+        if (t == null) {
+            System.out.println("Ticket not found.");
             return false;
         }
 
-        if (!ticket.isActive()) {
-            System.out.println("Ticket is not active: " + ticketId);
+        if (!t.isActive()) {
+            System.out.println("Ticket already closed or cancelled.");
             return false;
         }
 
-        ticket.close(finalPrice);
+        t.close(finalPrice);
         return true;
     }
 
-    // Optional: cancel ticket
+    // Cancel ticket
     public boolean cancelTicket(String ticketId) {
-        Ticket ticket = findTicketById(ticketId);
-        if (ticket == null) {
-            System.out.println("Ticket not found: " + ticketId);
+        Ticket t = findTicketById(ticketId);
+
+        if (t == null) {
+            System.out.println("Ticket not found.");
             return false;
         }
 
-        if (!ticket.isActive()) {
-            System.out.println("Ticket is not active: " + ticketId);
+        if (!t.isActive()) {
+            System.out.println("Ticket already closed.");
             return false;
         }
 
-        ticket.cancel();
+        t.cancel();
         return true;
     }
 
-    // Optional: print all tickets (for debugging)
+    // Viewing all tickets
     public void printAllTickets() {
         for (int i = 0; i < ticketCount; i++) {
-            if (tickets[i] != null) {
-                System.out.println(tickets[i].toString());
+            Ticket t = tickets[i];
+
+            if (t != null) {
+                System.out.println(
+                    "ID: " + t.getTicketId() +
+                    " | Status: " + t.getStatus() +
+                    " | Plate: " + t.getVehicle().getPlateNumber() +
+                    " | Price: " + t.getTotalPrice()
+                );
             }
         }
     }
