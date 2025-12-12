@@ -1,4 +1,4 @@
-package Hardware;
+package Hardware; //package Hardware
 
 import Structure.ParkingLot;
 import Structure.ParkingSpot;
